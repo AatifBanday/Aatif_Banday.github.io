@@ -3,8 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aatif | Portfolio</title>
+    
+    <meta name="title" content="Aatif Banday | Computer Science & Systems Architecture">
+    <meta name="description" content="Portfolio of a technologist based in Mississauga, specializing in Linux environments, AWS cloud infrastructure, and system security.">
+    
+    <title>Aatif Banday | Portfolio</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    
     <style>
         :root {
             --bg: #faf9f7;
@@ -23,10 +28,23 @@
             -webkit-font-smoothing: antialiased;
         }
 
+        /* Elegant Fade-In Animation */
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
         .wrapper {
             max-width: 650px;
             margin: 0 auto;
             padding: 15vh 2rem 10vh 2rem;
+            animation: fadeUp 0.8s ease-out forwards; /* Applies the animation */
         }
 
         h1, h2, h3 {
@@ -99,6 +117,7 @@
         /* Links */
         .links {
             display: flex;
+            flex-wrap: wrap;
             gap: 2rem;
             margin-top: 4rem;
             padding-top: 2rem;
@@ -144,8 +163,7 @@
                 flex-direction: column;
             }
             .links {
-                flex-direction: column;
-                gap: 1rem;
+                gap: 1.5rem;
             }
         }
     </style>
@@ -161,7 +179,7 @@
         <section id="summary">
             <h2>Overview</h2>
             <p>
-               I am a technologist driven by a deep fascination with how complex systems operate under the hood. Bridging academic rigor with hands-on deployment, my focus lies at the intersection of computer architecture, cloud infrastructure, and low-level system design.
+                I am a technologist driven by a deep fascination with how complex systems operate under the hood. Bridging academic rigor with hands-on deployment, my focus lies at the intersection of computer architecture, cloud infrastructure, and low-level system design.
             </p>
         </section>
 
@@ -214,7 +232,7 @@
 
         <div class="links">
             <a href="Aatif_Banday_Resume(1).pdf" target="_blank">View Résumé</a>
-            <a href="aatifnaseerahmed123@gmail.com">Contact Me</a>
+            <a href="mailto:aatifnaseerahmed123@gmail.com">Contact Me</a>
             <a href="https://www.linkedin.com/in/aatif-banday-43958b18a/" target="_blank">LinkedIn</a>
             <a href="https://github.com/AatifBanday" target="_blank">GitHub</a>
         </div>
