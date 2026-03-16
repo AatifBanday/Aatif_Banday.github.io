@@ -3,248 +3,683 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <meta name="title" content="Aatif Banday | Computer Science & Systems Architecture">
+    <meta name="title" content="Aatif Banday | Systems & Cloud Architecture">
     <meta name="description" content="Portfolio of a technologist based in Mississauga, specializing in Linux environments, AWS cloud infrastructure, and system security.">
-    
     <title>Aatif Banday | Portfolio</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
-    
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+
     <style>
+        /* ============================================================
+           DESIGN SYSTEM
+           ============================================================ */
         :root {
-            --bg: #faf9f7;
-            --text-main: #2b2b2b;
-            --text-muted: #6b6b6b;
-            --border: #e2e0db;
-            /* Added a slightly darker color for the subtle dots */
-            --dot-color: #d8d5ce; 
+            --bg-0:         #080c10;
+            --bg-1:         #0d1117;
+            --bg-2:         #111820;
+            --bg-3:         #161e28;
+            --bg-card:      #0f1822;
+
+            --border-subtle: rgba(255,255,255,0.05);
+            --border-mid:    rgba(255,255,255,0.09);
+            --border-glow:   rgba(0,196,255,0.25);
+
+            --accent-blue:   #00c4ff;
+            --accent-cyan:   #00e5c0;
+            --accent-dim:    rgba(0,196,255,0.12);
+
+            --text-1:  #e8edf3;
+            --text-2:  #8fa0b4;
+            --text-3:  #4e6070;
+
+            --font-display: 'Syne', sans-serif;
+            --font-body:    'DM Sans', sans-serif;
+            --font-mono:    'DM Mono', monospace;
+
+            --radius-card: 14px;
+            --shadow-card: 0 4px 40px rgba(0,0,0,0.55), 0 1px 0 rgba(255,255,255,0.04) inset;
+            --shadow-glow: 0 0 30px rgba(0,196,255,0.12);
         }
+
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        html { scroll-behavior: smooth; }
 
         body {
-            background-color: var(--bg);
-            /* This creates the elegant dot grid pattern */
-            background-image: radial-gradient(var(--dot-color) 1px, transparent 1px);
-            background-size: 24px 24px;
-            
-            color: var(--text-main);
-            font-family: 'Inter', sans-serif;
-            line-height: 1.8;
-            margin: 0;
-            padding: 0;
+            background-color: var(--bg-0);
+            background-image:
+                radial-gradient(ellipse 80vw 60vh at 50% -10%, rgba(0,100,180,0.12) 0%, transparent 70%),
+                linear-gradient(180deg, var(--bg-0) 0%, var(--bg-1) 100%);
+            color: var(--text-1);
+            font-family: var(--font-body);
+            line-height: 1.75;
             -webkit-font-smoothing: antialiased;
+            min-height: 100vh;
+            overflow-x: hidden;
         }
 
-        /* Elegant Fade-In Animation */
-        @keyframes fadeUp {
-            from {
-                opacity: 0;
-                transform: translateY(15px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        /* ============================================================
+           ANIMATED GRID OVERLAY
+           ============================================================ */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(0,196,255,0.025) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,196,255,0.025) 1px, transparent 1px);
+            background-size: 48px 48px;
+            pointer-events: none;
+            z-index: 0;
         }
 
+        /* Faint horizontal scan line */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--accent-blue), transparent);
+            animation: scan 8s linear infinite;
+            opacity: 0.18;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        @keyframes scan {
+            0%   { top: -4px; }
+            100% { top: 100vh; }
+        }
+
+        /* ============================================================
+           LAYOUT WRAPPER
+           ============================================================ */
         .wrapper {
-            max-width: 650px;
+            position: relative;
+            z-index: 1;
+            max-width: 720px;
             margin: 0 auto;
-            padding: 15vh 2rem 10vh 2rem;
-            animation: fadeUp 0.8s ease-out forwards;
-            /* Added a subtle glow behind the text to ensure it remains perfectly readable over the dots */
-            background: radial-gradient(circle at center, var(--bg) 0%, transparent 100%);
+            padding: 12vh 2rem 10vh 2rem;
         }
 
-        h1, h2, h3 {
-            font-family: 'Playfair Display', serif;
-            font-weight: 400;
-            color: var(--text-main);
-            margin-top: 0;
+        /* ============================================================
+           PAGE LOAD ANIMATION
+           ============================================================ */
+        .fade-item {
+            opacity: 0;
+            transform: translateY(22px);
+            animation: fadeUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+        .fade-item:nth-child(1) { animation-delay: 0.05s; }
+        .fade-item:nth-child(2) { animation-delay: 0.15s; }
+        .fade-item:nth-child(3) { animation-delay: 0.25s; }
+        .fade-item:nth-child(4) { animation-delay: 0.35s; }
+        .fade-item:nth-child(5) { animation-delay: 0.45s; }
+        .fade-item:nth-child(6) { animation-delay: 0.55s; }
+
+        @keyframes fadeUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ============================================================
+           HEADER
+           ============================================================ */
+        header {
+            margin-bottom: 5rem;
+        }
+
+        .header-meta {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .status-dot {
+            width: 7px; height: 7px;
+            background: var(--accent-cyan);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--accent-cyan);
+            animation: pulse 2.5s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50%       { opacity: 0.5; transform: scale(0.75); }
+        }
+
+        .status-label {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--accent-cyan);
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
         }
 
         h1 {
-            font-size: 3rem;
-            margin-bottom: 0.5rem;
-            letter-spacing: -0.02em;
+            font-family: var(--font-display);
+            font-weight: 800;
+            font-size: clamp(2.6rem, 6vw, 4rem);
+            letter-spacing: -0.03em;
+            line-height: 1.05;
+            color: var(--text-1);
+            margin-bottom: 0.75rem;
         }
 
-        .title {
-            font-size: 1.1rem;
-            color: var(--text-muted);
-            margin-bottom: 4rem;
+        h1 span.accent {
+            color: transparent;
+            -webkit-background-clip: text;
+            background-clip: text;
+            background-image: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
+        }
+
+        .tagline {
+            font-family: var(--font-body);
+            font-size: 1.05rem;
+            color: var(--text-2);
             font-weight: 300;
+            max-width: 480px;
+            line-height: 1.65;
         }
 
+        /* ============================================================
+           SECTION HEADINGS
+           ============================================================ */
         section {
-            margin-bottom: 4rem;
+            margin-bottom: 4.5rem;
+        }
+
+        .section-label {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1.75rem;
+        }
+
+        .section-label::before {
+            content: '';
+            display: inline-block;
+            width: 20px; height: 2px;
+            background: linear-gradient(90deg, var(--accent-blue), var(--accent-cyan));
+            border-radius: 2px;
+            flex-shrink: 0;
         }
 
         h2 {
-            font-size: 1.5rem;
-            margin-bottom: 1.5rem;
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 0.5rem;
+            font-family: var(--font-display);
+            font-size: 0.8rem;
+            font-weight: 600;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--text-2);
         }
 
-        p {
-            font-size: 1.05rem;
-            color: var(--text-main);
+        /* ============================================================
+           OVERVIEW
+           ============================================================ */
+        .overview-text {
+            font-size: 1.08rem;
             font-weight: 300;
-            margin-bottom: 1.5rem;
+            color: var(--text-1);
+            line-height: 1.85;
+            border-left: 2px solid var(--border-glow);
+            padding-left: 1.25rem;
         }
 
-        /* Experience Grid */
-        .experience-item {
-            margin-bottom: 2rem;
-        }
-
-        .experience-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: baseline;
-            margin-bottom: 0.5rem;
-        }
-
-        .role {
-            font-weight: 500;
-            font-size: 1.1rem;
-        }
-
+        /* ============================================================
+           EXPERIENCE CARDS / TIMELINE
+           ============================================================ */
         .timeline {
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            font-family: 'Inter', sans-serif;
-        }
-
-        .tech-stack {
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            font-style: italic;
-        }
-
-        /* Links */
-        .links {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 2rem;
-            margin-top: 4rem;
-            padding-top: 2rem;
-            border-top: 1px solid var(--border);
-        }
-
-        a {
-            color: var(--text-main);
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 0.95rem;
-            transition: color 0.3s ease;
             position: relative;
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
         }
 
-        a::after {
+        /* Vertical rule */
+        .timeline::before {
             content: '';
             position: absolute;
-            width: 100%;
-            height: 1px;
-            bottom: -2px;
-            left: 0;
-            background-color: var(--text-main);
-            transform: scaleX(0);
-            transform-origin: bottom right;
-            transition: transform 0.3s ease-out;
+            left: 19px;
+            top: 12px;
+            bottom: 12px;
+            width: 1px;
+            background: linear-gradient(180deg, var(--accent-blue) 0%, var(--accent-cyan) 60%, transparent 100%);
+            opacity: 0.3;
         }
 
-        a:hover::after {
-            transform: scaleX(1);
-            transform-origin: bottom left;
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-card);
+            padding: 1.5rem 1.5rem 1.5rem 4rem;
+            position: relative;
+            box-shadow: var(--shadow-card);
+            transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+            cursor: default;
         }
 
-        a:hover {
-            color: #000;
+        .card:hover {
+            border-color: var(--border-glow);
+            box-shadow: var(--shadow-card), var(--shadow-glow);
+            transform: translateY(-2px);
         }
 
+        /* Timeline node */
+        .card::before {
+            content: '';
+            position: absolute;
+            left: 13px; top: 1.6rem;
+            width: 12px; height: 12px;
+            background: var(--bg-0);
+            border: 2px solid var(--accent-blue);
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(0,196,255,0.4);
+            transition: background 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover::before {
+            background: var(--accent-blue);
+            box-shadow: 0 0 16px rgba(0,196,255,0.8);
+        }
+
+        /* In Progress card gets cyan node */
+        .card.in-progress::before {
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 10px rgba(0,229,192,0.4);
+        }
+        .card.in-progress:hover::before {
+            background: var(--accent-cyan);
+            box-shadow: 0 0 16px rgba(0,229,192,0.8);
+        }
+        .card.in-progress {
+            border-color: rgba(0,229,192,0.12);
+        }
+        .card.in-progress:hover {
+            border-color: rgba(0,229,192,0.35);
+            box-shadow: var(--shadow-card), 0 0 30px rgba(0,229,192,0.1);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 0.4rem;
+            flex-wrap: wrap;
+        }
+
+        .card-role {
+            font-family: var(--font-display);
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: var(--text-1);
+            letter-spacing: -0.01em;
+        }
+
+        .card-time {
+            font-family: var(--font-mono);
+            font-size: 0.78rem;
+            color: var(--text-3);
+            white-space: nowrap;
+            padding-top: 3px;
+        }
+
+        .card-org {
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            color: var(--accent-blue);
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .card-org.cyan { color: var(--accent-cyan); }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            font-family: var(--font-mono);
+            font-size: 0.68rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            padding: 2px 8px;
+            border-radius: 99px;
+            background: rgba(0,229,192,0.1);
+            color: var(--accent-cyan);
+            border: 1px solid rgba(0,229,192,0.25);
+        }
+
+        .badge::before {
+            content: '';
+            width: 5px; height: 5px;
+            background: var(--accent-cyan);
+            border-radius: 50%;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .card-desc {
+            font-size: 0.92rem;
+            color: var(--text-2);
+            font-weight: 300;
+            line-height: 1.7;
+            margin: 0;
+        }
+
+        /* Tag chips */
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+            margin-top: 0.9rem;
+        }
+
+        .tag {
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            color: var(--text-3);
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border-subtle);
+            padding: 2px 9px;
+            border-radius: 4px;
+            letter-spacing: 0.04em;
+            transition: color 0.2s, border-color 0.2s, background 0.2s;
+        }
+
+        .card:hover .tag {
+            color: var(--text-2);
+            border-color: var(--border-mid);
+        }
+
+        /* ============================================================
+           GOALS SECTION
+           ============================================================ */
+        .goals-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .goal-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-card);
+            padding: 1.4rem;
+            box-shadow: var(--shadow-card);
+            transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+            cursor: default;
+        }
+
+        .goal-card:hover {
+            border-color: var(--border-glow);
+            box-shadow: var(--shadow-card), var(--shadow-glow);
+            transform: translateY(-2px);
+        }
+
+        .goal-icon {
+            font-size: 1.4rem;
+            margin-bottom: 0.65rem;
+        }
+
+        .goal-title {
+            font-family: var(--font-display);
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-1);
+            margin-bottom: 0.4rem;
+            letter-spacing: 0.01em;
+        }
+
+        .goal-desc {
+            font-size: 0.87rem;
+            color: var(--text-2);
+            font-weight: 300;
+            line-height: 1.65;
+            margin: 0;
+        }
+
+        /* ============================================================
+           LINKS / CTA BAR
+           ============================================================ */
+        .cta-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            padding-top: 3rem;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: var(--font-mono);
+            font-size: 0.82rem;
+            font-weight: 500;
+            letter-spacing: 0.06em;
+            text-decoration: none;
+            padding: 0.6rem 1.3rem;
+            border-radius: 8px;
+            border: 1px solid transparent;
+            transition: all 0.25s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Primary CTA */
+        .btn-primary {
+            background: linear-gradient(135deg, rgba(0,196,255,0.18), rgba(0,229,192,0.1));
+            border-color: rgba(0,196,255,0.35);
+            color: var(--accent-blue);
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(0,196,255,0.22), rgba(0,229,192,0.15));
+            opacity: 0;
+            transition: opacity 0.25s ease;
+        }
+
+        .btn-primary:hover {
+            border-color: var(--accent-blue);
+            color: #fff;
+            box-shadow: 0 0 20px rgba(0,196,255,0.25);
+        }
+        .btn-primary:hover::before { opacity: 1; }
+
+        /* Ghost buttons */
+        .btn-ghost {
+            background: transparent;
+            border-color: var(--border-mid);
+            color: var(--text-2);
+        }
+
+        .btn-ghost:hover {
+            border-color: rgba(0,196,255,0.4);
+            color: var(--text-1);
+            background: rgba(0,196,255,0.06);
+        }
+
+        .btn span { position: relative; z-index: 1; }
+
+        /* Icon SVG */
+        .btn svg {
+            width: 13px; height: 13px;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            flex-shrink: 0;
+            transition: transform 0.2s ease;
+        }
+        .btn:hover svg { transform: translateX(2px); }
+        .btn-ghost:hover svg { transform: none; }
+
+        /* ============================================================
+           FOOTER LINE
+           ============================================================ */
+        .footer {
+            margin-top: 4rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border-subtle);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-mono {
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            color: var(--text-3);
+            letter-spacing: 0.06em;
+        }
+
+        .footer-mono span { color: var(--accent-blue); }
+
+        /* ============================================================
+           RESPONSIVE
+           ============================================================ */
         @media (max-width: 600px) {
-            .wrapper {
-                padding-top: 10vh;
-            }
-            .experience-header {
-                flex-direction: column;
-            }
-            .links {
-                gap: 1.5rem;
-            }
+            .wrapper { padding-top: 8vh; }
+            h1 { font-size: 2.4rem; }
+            .goals-grid { grid-template-columns: 1fr; }
+            .card { padding-left: 3.5rem; }
+            .card-header { flex-direction: column; gap: 0.2rem; }
+            .cta-bar { gap: 0.6rem; }
         }
     </style>
 </head>
 <body>
 
-    <div class="wrapper">
-        <header>
-            <h1>Aatif Banday</h1>
-            <div class="title">Computer Science & Systems Architecture</div>
-        </header>
+<div class="wrapper">
 
-        <section id="summary">
-            <h2>Overview</h2>
-            <p>
-                I am a technologist driven by a deep fascination with how complex systems operate under the hood. Bridging academic rigor with hands-on deployment, my focus lies at the intersection of computer architecture, cloud infrastructure, and low-level system design.
-            </p>
-        </section>
-
-        <section id="experience">
-            <h2>Experience & Education</h2>
-            
-            <div class="experience-item">
-                <div class="experience-header">
-                    <div class="role">Bachelor of Science, Computer Science</div>
-                    <div class="timeline">2026 — Present</div>
-                </div>
-                <div class="tech-stack">BITS Pilani</div>
-                <p style="font-size: 0.95rem; margin-top: 0.5rem;">
-                    Currently expanding my theoretical and practical foundation in software engineering, with an intended specialization in Computing Systems to deeply understand system-level operations.
-                </p>
-            </div>
-
-            <div class="experience-item">
-                <div class="experience-header">
-                    <div class="role">Computer Science Diploma</div>
-                    <div class="timeline">Completed 2025</div>
-                </div>
-                <div class="tech-stack">Sheridan College</div>
-                <p style="font-size: 0.95rem; margin-top: 0.5rem;">
-                    Completed an intensive two-year program focusing on core programming methodologies, logic, and application development.
-                </p>
-            </div>
-
-            <div class="experience-item">
-                <div class="experience-header">
-                    <div class="role">Systems & Cloud Environments</div>
-                    <div class="timeline">Independent Focus</div>
-                </div>
-                <div class="tech-stack">Linux (Ubuntu), AWS</div>
-                <p style="font-size: 0.95rem; margin-top: 0.5rem;">
-                    Actively architecting and managing environments within the AWS ecosystem and mastering Linux distributions to build resilient, scalable computing infrastructure.
-                </p>
-            </div>
-        </section>
-
-        <section id="goals">
-            <h2>Career Goals</h2>
-            <p>
-                My immediate objective is to integrate into a forward-thinking technical team in Canada, translating my academic foundation into hands-on, high-impact work experience. 
-            </p>
-            <p>
-                Long-term, I am driving toward a specialization in <strong>System Security</strong>. My goal is to not only build and administer cloud and physical architectures but to rigorously safeguard the low-level systems that power modern computing.
-            </p>
-        </section>
-
-        <div class="links">
-            <a href="resume.pdf" target="_blank">View Résumé</a>
-            <a href="mailto:aatifnaseerahmed123@gmail.com">Contact Me</a>
-            <a href="https://www.linkedin.com/in/aatif-banday-43958b18a/" target="_blank">LinkedIn</a>
-            <a href="https://github.com/AatifBanday" target="_blank">GitHub</a>
+    <!-- ======== HEADER ======== -->
+    <header class="fade-item">
+        <div class="header-meta">
+            <div class="status-dot"></div>
+            <span class="status-label">Open to opportunities · Mississauga, ON</span>
         </div>
+        <h1>Aatif <span class="accent">Banday</span></h1>
+        <p class="tagline">Systems architecture, cloud infrastructure &amp; security — building for the machines that power everything else.</p>
+    </header>
+
+    <!-- ======== OVERVIEW ======== -->
+    <section class="fade-item">
+        <div class="section-label"><h2>Overview</h2></div>
+        <p class="overview-text">
+            I am a technologist driven by a deep fascination with how complex systems operate under the hood. Bridging academic rigor with hands-on deployment, my focus lies at the intersection of computer architecture, cloud infrastructure, and low-level system design. My near-term goal is to contribute to a forward-thinking technical team and grow in IT operations and systems security.
+        </p>
+    </section>
+
+    <!-- ======== EXPERIENCE & EDUCATION ======== -->
+    <section class="fade-item">
+        <div class="section-label"><h2>Experience &amp; Education</h2></div>
+
+        <div class="timeline">
+
+            <!-- BITS Pilani — IN PROGRESS -->
+            <div class="card in-progress">
+                <div class="card-header">
+                    <span class="card-role">Bachelor of Science — Computer Science</span>
+                    <span class="card-time">2026 — Present</span>
+                </div>
+                <div class="card-org cyan">
+                    BITS Pilani
+                    &nbsp;<span class="badge">In Progress</span>
+                </div>
+                <p class="card-desc">Currently deepening my theoretical and applied foundation in software engineering, with intended specialization in Computing Systems to rigorously understand system-level operations, OS internals, and hardware-software interaction.</p>
+                <div class="tags">
+                    <span class="tag">Operating Systems</span>
+                    <span class="tag">Computer Architecture</span>
+                    <span class="tag">Algorithms</span>
+                    <span class="tag">Networking</span>
+                </div>
+            </div>
+
+            <!-- Sheridan College -->
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-role">Computer Science Diploma</span>
+                    <span class="card-time">Completed 2025</span>
+                </div>
+                <div class="card-org">Sheridan College</div>
+                <p class="card-desc">Completed an intensive two-year program focusing on core programming methodologies, logic, application development, and collaborative software engineering practices.</p>
+                <div class="tags">
+                    <span class="tag">OOP</span>
+                    <span class="tag">Web Development</span>
+                    <span class="tag">Databases</span>
+                    <span class="tag">Data Structures</span>
+                </div>
+            </div>
+
+            <!-- Systems & Cloud -->
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-role">Systems &amp; Cloud Environments</span>
+                    <span class="card-time">Independent Focus</span>
+                </div>
+                <div class="card-org">Self-Directed Practice</div>
+                <p class="card-desc">Actively architecting and managing environments within the AWS ecosystem, mastering Linux distributions, and building resilient, scalable computing infrastructure with an emphasis on security hardening and operational observability.</p>
+                <div class="tags">
+                    <span class="tag">Linux · Ubuntu</span>
+                    <span class="tag">AWS EC2 / S3 / IAM</span>
+                    <span class="tag">Bash Scripting</span>
+                    <span class="tag">Security Hardening</span>
+                    <span class="tag">Networking</span>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ======== CAREER GOALS ======== -->
+    <section class="fade-item">
+        <div class="section-label"><h2>Career Goals</h2></div>
+        <div class="goals-grid">
+            <div class="goal-card">
+                <div class="goal-icon">🖥️</div>
+                <div class="goal-title">Immediate — IT Operations</div>
+                <p class="goal-desc">Integrate into a forward-thinking technical team in Canada, translating academic foundations into hands-on, high-impact IT support and systems work.</p>
+            </div>
+            <div class="goal-card">
+                <div class="goal-icon">🔐</div>
+                <div class="goal-title">Long-term — System Security</div>
+                <p class="goal-desc">Specialize in securing cloud and physical architectures, rigorously safeguarding the low-level systems and infrastructure that power modern computing.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ======== CTA BAR ======== -->
+    <div class="cta-bar fade-item">
+        <a href="resume.pdf" target="_blank" class="btn btn-primary">
+            <span>View Résumé</span>
+            <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+        <a href="mailto:aatifnaseerahmed123@gmail.com" class="btn btn-ghost">
+            <span>Contact Me</span>
+        </a>
+        <a href="https://www.linkedin.com/in/aatif-banday-43958b18a/" target="_blank" class="btn btn-ghost">
+            <span>LinkedIn</span>
+        </a>
+        <a href="https://github.com/AatifBanday" target="_blank" class="btn btn-ghost">
+            <span>GitHub</span>
+        </a>
     </div>
+
+    <!-- ======== FOOTER ======== -->
+    <footer class="footer fade-item">
+        <span class="footer-mono">aatif<span>.</span>banday &nbsp;//&nbsp; systems architect</span>
+        <span class="footer-mono">© <span>2025</span></span>
+    </footer>
+
+</div>
 
 </body>
 </html>
