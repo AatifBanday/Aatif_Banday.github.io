@@ -9,6 +9,7 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+    
 
     <style>
         /* ============================================================
@@ -20,6 +21,7 @@
             --bg-2:         #111820;
             --bg-3:         #161e28;
             --bg-card:      #0f1822;
+            --bg-terminal:  #070e14;
 
             --border-subtle: rgba(255,255,255,0.05);
             --border-mid:    rgba(255,255,255,0.09);
@@ -27,6 +29,7 @@
 
             --accent-blue:   #00c4ff;
             --accent-cyan:   #00e5c0;
+            --accent-green:  #39ff94;
             --accent-dim:    rgba(0,196,255,0.12);
 
             --text-1:  #e8edf3;
@@ -40,10 +43,10 @@
             --radius-card: 14px;
             --shadow-card: 0 4px 40px rgba(0,0,0,0.55), 0 1px 0 rgba(255,255,255,0.04) inset;
             --shadow-glow: 0 0 30px rgba(0,196,255,0.12);
+            --shadow-glow-cyan: 0 0 30px rgba(0,229,192,0.12);
         }
 
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
         html { scroll-behavior: smooth; }
 
         body {
@@ -59,9 +62,7 @@
             overflow-x: hidden;
         }
 
-        /* ============================================================
-           ANIMATED GRID OVERLAY
-           ============================================================ */
+        /* Grid overlay */
         body::before {
             content: '';
             position: fixed;
@@ -74,7 +75,7 @@
             z-index: 0;
         }
 
-        /* Faint horizontal scan line */
+        /* Scan line */
         body::after {
             content: '';
             position: fixed;
@@ -93,30 +94,82 @@
         }
 
         /* ============================================================
-           LAYOUT WRAPPER
+           LAYOUT
            ============================================================ */
         .wrapper {
             position: relative;
             z-index: 1;
             max-width: 720px;
             margin: 0 auto;
-            padding: 12vh 2rem 10vh 2rem;
+            padding: 8vh 2rem 10vh 2rem;
         }
 
         /* ============================================================
-           PAGE LOAD ANIMATION
+           TERMINAL PROMPT — typing animation
+           ============================================================ */
+        .terminal-prompt {
+            font-family: var(--font-mono);
+            font-size: 0.78rem;
+            color: var(--text-3);
+            margin-bottom: 3.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0;
+            opacity: 0;
+            animation: fadeUp 0.5s ease forwards 0.05s;
+            user-select: none;
+        }
+
+        .tp-user  { color: var(--accent-cyan); }
+        .tp-at    { color: var(--text-3); }
+        .tp-host  { color: var(--accent-blue); }
+        .tp-path  { color: var(--text-3); }
+        .tp-dollar{ color: var(--text-2); }
+
+        /* The command text types in */
+        .tp-cmd {
+            color: var(--text-1);
+            overflow: hidden;
+            white-space: nowrap;
+            border-right: 2px solid var(--accent-cyan);
+            width: 0;
+            animation:
+                typeCmd 1.8s steps(32, end) 0.7s forwards,
+                blinkCursor 0.8s step-end 0.7s 5,
+                hideCursor 0s 2.6s forwards;
+        }
+
+        @keyframes typeCmd {
+            from { width: 0; }
+            to   { width: 20ch; }
+        }
+
+        @keyframes blinkCursor {
+            0%, 100% { border-color: var(--accent-cyan); }
+            50%      { border-color: transparent; }
+        }
+
+        @keyframes hideCursor {
+            to { border-color: transparent; }
+        }
+
+        /* ============================================================
+           PAGE LOAD ANIMATIONS
            ============================================================ */
         .fade-item {
             opacity: 0;
             transform: translateY(22px);
             animation: fadeUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
         }
-        .fade-item:nth-child(1) { animation-delay: 0.05s; }
-        .fade-item:nth-child(2) { animation-delay: 0.15s; }
-        .fade-item:nth-child(3) { animation-delay: 0.25s; }
-        .fade-item:nth-child(4) { animation-delay: 0.35s; }
-        .fade-item:nth-child(5) { animation-delay: 0.45s; }
-        .fade-item:nth-child(6) { animation-delay: 0.55s; }
+        .fade-item:nth-child(1) { animation-delay: 0.1s; }
+        .fade-item:nth-child(2) { animation-delay: 0.2s; }
+        .fade-item:nth-child(3) { animation-delay: 0.3s; }
+        .fade-item:nth-child(4) { animation-delay: 0.4s; }
+        .fade-item:nth-child(5) { animation-delay: 0.5s; }
+        .fade-item:nth-child(6) { animation-delay: 0.6s; }
+        .fade-item:nth-child(7) { animation-delay: 0.7s; }
+        .fade-item:nth-child(8) { animation-delay: 0.8s; }
+        .fade-item:nth-child(9) { animation-delay: 0.9s; }
 
         @keyframes fadeUp {
             to { opacity: 1; transform: translateY(0); }
@@ -125,9 +178,7 @@
         /* ============================================================
            HEADER
            ============================================================ */
-        header {
-            margin-bottom: 5rem;
-        }
+        header { margin-bottom: 5rem; }
 
         .header-meta {
             display: flex;
@@ -143,6 +194,7 @@
             box-shadow: 0 0 8px var(--accent-cyan);
             animation: pulse 2.5s ease-in-out infinite;
         }
+
         @keyframes pulse {
             0%, 100% { opacity: 1; transform: scale(1); }
             50%       { opacity: 0.5; transform: scale(0.75); }
@@ -174,7 +226,6 @@
         }
 
         .tagline {
-            font-family: var(--font-body);
             font-size: 1.05rem;
             color: var(--text-2);
             font-weight: 300;
@@ -185,9 +236,7 @@
         /* ============================================================
            SECTION HEADINGS
            ============================================================ */
-        section {
-            margin-bottom: 4.5rem;
-        }
+        section { margin-bottom: 4.5rem; }
 
         .section-label {
             display: flex;
@@ -227,7 +276,7 @@
         }
 
         /* ============================================================
-           EXPERIENCE CARDS / TIMELINE
+           EXPERIENCE TIMELINE CARDS
            ============================================================ */
         .timeline {
             position: relative;
@@ -236,7 +285,6 @@
             gap: 1.25rem;
         }
 
-        /* Vertical rule */
         .timeline::before {
             content: '';
             position: absolute;
@@ -265,7 +313,6 @@
             transform: translateY(-2px);
         }
 
-        /* Timeline node */
         .card::before {
             content: '';
             position: absolute;
@@ -283,7 +330,6 @@
             box-shadow: 0 0 16px rgba(0,196,255,0.8);
         }
 
-        /* In Progress card gets cyan node */
         .card.in-progress::before {
             border-color: var(--accent-cyan);
             box-shadow: 0 0 10px rgba(0,229,192,0.4);
@@ -292,9 +338,7 @@
             background: var(--accent-cyan);
             box-shadow: 0 0 16px rgba(0,229,192,0.8);
         }
-        .card.in-progress {
-            border-color: rgba(0,229,192,0.12);
-        }
+        .card.in-progress { border-color: rgba(0,229,192,0.12); }
         .card.in-progress:hover {
             border-color: rgba(0,229,192,0.35);
             box-shadow: var(--shadow-card), 0 0 30px rgba(0,229,192,0.1);
@@ -334,7 +378,6 @@
             align-items: center;
             gap: 0.5rem;
         }
-
         .card-org.cyan { color: var(--accent-cyan); }
 
         .badge {
@@ -368,7 +411,6 @@
             margin: 0;
         }
 
-        /* Tag chips */
         .tags {
             display: flex;
             flex-wrap: wrap;
@@ -394,7 +436,228 @@
         }
 
         /* ============================================================
-           GOALS SECTION
+           HOMELAB & PROJECTS — 2-column grid
+           ============================================================ */
+        .projects-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.1rem;
+        }
+
+        .project-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-card);
+            padding: 1.5rem;
+            position: relative;
+            box-shadow: var(--shadow-card);
+            overflow: hidden;
+            transition: border-color 0.35s ease, box-shadow 0.35s ease, transform 0.35s ease;
+            cursor: default;
+        }
+
+        /* Glow bleed on hover */
+        .project-card::after {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            border-radius: var(--radius-card);
+            background: radial-gradient(ellipse at 30% 0%, rgba(0,196,255,0.08) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.35s ease;
+            pointer-events: none;
+        }
+
+        .project-card:hover {
+            border-color: var(--border-glow);
+            box-shadow: var(--shadow-card), var(--shadow-glow), 0 0 60px rgba(0,196,255,0.06);
+            transform: translateY(-3px);
+        }
+
+        .project-card:hover::after { opacity: 1; }
+
+        /* Top decorative stripe */
+        .project-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent-blue), var(--accent-cyan));
+            opacity: 0;
+            transition: opacity 0.35s ease;
+        }
+
+        .project-card:hover::before { opacity: 1; }
+
+        .project-icon {
+            font-size: 1.5rem;
+            margin-bottom: 0.9rem;
+            display: block;
+        }
+
+        .project-title {
+            font-family: var(--font-display);
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-1);
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.01em;
+        }
+
+        .project-desc {
+            font-size: 0.88rem;
+            color: var(--text-2);
+            font-weight: 300;
+            line-height: 1.65;
+            margin: 0 0 1rem 0;
+        }
+
+        .project-stack {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.35rem;
+        }
+
+        .project-tag {
+            font-family: var(--font-mono);
+            font-size: 0.68rem;
+            color: var(--accent-blue);
+            background: rgba(0,196,255,0.07);
+            border: 1px solid rgba(0,196,255,0.18);
+            padding: 2px 8px;
+            border-radius: 4px;
+            letter-spacing: 0.04em;
+            transition: background 0.2s, border-color 0.2s;
+        }
+
+        .project-card:hover .project-tag {
+            background: rgba(0,196,255,0.12);
+            border-color: rgba(0,196,255,0.32);
+        }
+
+        /* ============================================================
+           TECHNICAL ARSENAL — terminal window
+           ============================================================ */
+        .terminal-window {
+            background: var(--bg-terminal);
+            border: 1px solid var(--border-mid);
+            border-radius: var(--radius-card);
+            box-shadow: var(--shadow-card);
+            overflow: hidden;
+        }
+
+        /* Window chrome bar */
+        .tw-chrome {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.7rem 1rem;
+            background: rgba(255,255,255,0.03);
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .tw-dot {
+            width: 10px; height: 10px;
+            border-radius: 50%;
+        }
+        .tw-dot.red    { background: #ff5f56; }
+        .tw-dot.yellow { background: #ffbd2e; }
+        .tw-dot.green  { background: #27c93f; }
+
+        .tw-title {
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            color: var(--text-3);
+            margin-left: 0.5rem;
+            letter-spacing: 0.06em;
+        }
+
+        /* Terminal body */
+        .tw-body {
+            padding: 1.4rem 1.5rem 1.6rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        /* Each skill group */
+        .skill-group {}
+
+        .skill-group-label {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            margin-bottom: 0.6rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .skill-group-label .prompt-char { color: var(--accent-green); }
+        .skill-group-label .label-text  { color: var(--text-3); }
+
+        .skill-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .skill-badge {
+            font-family: var(--font-mono);
+            font-size: 0.78rem;
+            font-weight: 400;
+            padding: 0.3rem 0.8rem;
+            border-radius: 6px;
+            border: 1px solid;
+            letter-spacing: 0.03em;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+            cursor: default;
+        }
+
+        .skill-badge:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.15);
+        }
+
+        /* Colour variants */
+        .sb-blue {
+            color: var(--accent-blue);
+            background: rgba(0,196,255,0.07);
+            border-color: rgba(0,196,255,0.2);
+        }
+        .sb-blue:hover { box-shadow: 0 4px 16px rgba(0,196,255,0.2); }
+
+        .sb-cyan {
+            color: var(--accent-cyan);
+            background: rgba(0,229,192,0.07);
+            border-color: rgba(0,229,192,0.2);
+        }
+        .sb-cyan:hover { box-shadow: 0 4px 16px rgba(0,229,192,0.2); }
+
+        .sb-green {
+            color: var(--accent-green);
+            background: rgba(57,255,148,0.06);
+            border-color: rgba(57,255,148,0.18);
+        }
+        .sb-green:hover { box-shadow: 0 4px 16px rgba(57,255,148,0.18); }
+
+        .sb-dim {
+            color: var(--text-2);
+            background: rgba(255,255,255,0.04);
+            border-color: var(--border-mid);
+        }
+        .sb-dim:hover { box-shadow: 0 4px 16px rgba(255,255,255,0.06); }
+
+        /* Divider between groups */
+        .tw-divider {
+            height: 1px;
+            background: var(--border-subtle);
+            margin: 0 -1.5rem;
+        }
+
+        /* ============================================================
+           GOALS
            ============================================================ */
         .goals-grid {
             display: grid;
@@ -441,7 +704,7 @@
         }
 
         /* ============================================================
-           LINKS / CTA BAR
+           CTA BAR
            ============================================================ */
         .cta-bar {
             display: flex;
@@ -468,7 +731,6 @@
             overflow: hidden;
         }
 
-        /* Primary CTA */
         .btn-primary {
             background: linear-gradient(135deg, rgba(0,196,255,0.18), rgba(0,229,192,0.1));
             border-color: rgba(0,196,255,0.35);
@@ -491,7 +753,6 @@
         }
         .btn-primary:hover::before { opacity: 1; }
 
-        /* Ghost buttons */
         .btn-ghost {
             background: transparent;
             border-color: var(--border-mid);
@@ -506,7 +767,6 @@
 
         .btn span { position: relative; z-index: 1; }
 
-        /* Icon SVG */
         .btn svg {
             width: 13px; height: 13px;
             stroke: currentColor;
@@ -521,7 +781,7 @@
         .btn-ghost:hover svg { transform: none; }
 
         /* ============================================================
-           FOOTER LINE
+           FOOTER
            ============================================================ */
         .footer {
             margin-top: 4rem;
@@ -547,18 +807,25 @@
            RESPONSIVE
            ============================================================ */
         @media (max-width: 600px) {
-            .wrapper { padding-top: 8vh; }
+            .wrapper { padding-top: 6vh; }
             h1 { font-size: 2.4rem; }
-            .goals-grid { grid-template-columns: 1fr; }
+            .goals-grid,
+            .projects-grid { grid-template-columns: 1fr; }
             .card { padding-left: 3.5rem; }
             .card-header { flex-direction: column; gap: 0.2rem; }
             .cta-bar { gap: 0.6rem; }
+            .tp-cmd { animation-duration: 1.4s; }
         }
     </style>
 </head>
 <body>
 
 <div class="wrapper">
+
+    <!-- ======== TERMINAL PROMPT ======== -->
+    <div class="terminal-prompt" aria-hidden="true">
+        <span class="tp-user">aatif</span><span class="tp-at">@</span><span class="tp-host">portfolio</span><span class="tp-path">:~</span><span class="tp-dollar">$&nbsp;</span><span class="tp-cmd">sudo initiate_profile</span>
+    </div>
 
     <!-- ======== HEADER ======== -->
     <header class="fade-item">
@@ -639,6 +906,75 @@
         </div>
     </section>
 
+    <!-- ======== TECHNICAL ARSENAL ======== -->
+    <section class="fade-item">
+        <div class="section-label"><h2>Technical Arsenal</h2></div>
+
+        <div class="terminal-window">
+            <div class="tw-chrome">
+                <span class="tw-dot red"></span>
+                <span class="tw-dot yellow"></span>
+                <span class="tw-dot green"></span>
+                <span class="tw-title">skills.sh — aatif@portfolio:~</span>
+            </div>
+            <div class="tw-body">
+
+                <!-- GROUP 1 -->
+                <div class="skill-group">
+                    <div class="skill-group-label">
+                        <span class="prompt-char">▶</span>
+                        <span class="label-text">Systems &amp; OS</span>
+                    </div>
+                    <div class="skill-badges">
+                        <span class="skill-badge sb-cyan">Skill 1</span>
+                        <span class="skill-badge sb-cyan">Skill 2</span>
+                        <span class="skill-badge sb-cyan">Skill 3</span>
+                        <span class="skill-badge sb-cyan">Skill 4</span>
+                        <span class="skill-badge sb-cyan">Skill 5</span>
+                        <span class="skill-badge sb-cyan">Skill 6</span>
+                    </div>
+                </div>
+
+                <div class="tw-divider"></div>
+
+                <!-- GROUP 2 -->
+                <div class="skill-group">
+                    <div class="skill-group-label">
+                        <span class="prompt-char">▶</span>
+                        <span class="label-text">Networking &amp; Hardware</span>
+                    </div>
+                    <div class="skill-badges">
+                        <span class="skill-badge sb-blue">Skill 1</span>
+                        <span class="skill-badge sb-blue">Skill 2</span>
+                        <span class="skill-badge sb-blue">Skill 3</span>
+                        <span class="skill-badge sb-blue">Skill 4</span>
+                        <span class="skill-badge sb-blue">Skill 5</span>
+                        <span class="skill-badge sb-blue">Skill 6</span>
+                    </div>
+                </div>
+
+                <div class="tw-divider"></div>
+
+                <!-- GROUP 3 -->
+                <div class="skill-group">
+                    <div class="skill-group-label">
+                        <span class="prompt-char">▶</span>
+                        <span class="label-text">Tools &amp; Methodologies</span>
+                    </div>
+                    <div class="skill-badges">
+                        <span class="skill-badge sb-dim">Skill 1</span>
+                        <span class="skill-badge sb-dim">Skill 2</span>
+                        <span class="skill-badge sb-dim">Skill 3</span>
+                        <span class="skill-badge sb-dim">Skill 4</span>
+                        <span class="skill-badge sb-dim">Skill 5</span>
+                        <span class="skill-badge sb-dim">Skill 6</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
     <!-- ======== CAREER GOALS ======== -->
     <section class="fade-item">
         <div class="section-label"><h2>Career Goals</h2></div>
@@ -662,7 +998,7 @@
             <span>View Résumé</span>
             <svg viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </a>
-        <a href="mailto:aatifnaseerahmed123@gmail.com" class="btn btn-ghost">
+        <a href="/cdn-cgi/l/email-protection#f998988d909f97988a9c9c8b9891949c9dc8cbcab99e94989095d79a9694" class="btn btn-ghost">
             <span>Contact Me</span>
         </a>
         <a href="https://www.linkedin.com/in/aatif-banday-43958b18a/" target="_blank" class="btn btn-ghost">
@@ -676,10 +1012,4 @@
     <!-- ======== FOOTER ======== -->
     <footer class="footer fade-item">
         <span class="footer-mono">aatif<span>.</span>banday &nbsp;//&nbsp; systems architect</span>
-        <span class="footer-mono">© <span>2025</span></span>
-    </footer>
-
-</div>
-
-</body>
-</html>
+        <span class="footer-mono">© <span>2026</
